@@ -1,13 +1,31 @@
-const axios = require("axios");
-const {writeFile} = require("fs");
+const http = require("http");
 
-axios.get("https://jsonplaceholder.typicode.com/todos").then((res) => {
-  const data = res.data;
+const array = [
+  { id: 1, name: "Post 1" },
+  { id: 2, name: "Post 2" },
+  { id: 3, name: "Post 3" },
+];
 
-  writeFile("data.json", JSON.stringify(data), (err) => {
-    if (err) throw err;
-    console.log("Data written to file");
-  });
+const server = http.createServer((req, res) => {
+  switch (req.url) {
+    case "/":
+      res.setHeader("Content-Type", "text/html");
+      res.writeHead(200);
+      res.end("<div>Hello World!!</div>");
+      break;
+    case "/posts":
+      res.setHeader("Content-Type", "application/json");
+      res.writeHead(201);
+      res.end(JSON.stringify(array));
+      break;
+    default:
+      res.writeHead(404);
+      res.end("Not Found");
+      break;
+  }
+});
 
-  
+const PORT = 4000;
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
